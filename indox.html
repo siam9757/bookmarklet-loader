@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Quotex স্টাইল ক্যান্ডেল মার্কেট টাইমফ্রেম সিলেক্টর সহ - জুম এবং প্যান সহ</title>
+<style>
+  body {
+    background: #121212;
+    color: #eee;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 20px;
+    user-select: none; /* ড্র্যাগের সময় টেক্সট সিলেক্ট না হয় */
+  }
+  canvas {
+    background: #1e1e1e;
+    border: 1px solid #444;
+    display: block;
+    margin: 20px auto;
+    cursor: grab;
+  }
+  canvas:active {
+    cursor: grabbing;
+  }
+  select {
+    padding: 8px 12px;
+    font-size: 16px;
+    margin-top: 10px;
+    border-radius: 4px;
+  }
+</style>
+</head>
+<body>
+
+<h2>Quotex স্টাইল ক্যান্ডেল মার্কেট ডেমো (জুম ও প্যান সহ)</h2>
+
+<label for="timeframe">টাইমফ্রেম নির্বাচন করুন:</label>
+<select id="timeframe">
+  <option value="5000">5 সেকেন্ড</option>
+  <option value="30000">30 সেকেন্ড</option>
+  <option value="60000">1 মিনিট</option>
+  <option value="300000">5 মিনিট</option>
+</select>
+
+<canvas id="canvas" width="900" height="400"></canvas>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+let candleWidth = 12;
+const candleGap = 6;
+const maxCandles = 50;
+
+let candles = [];
+let animCandle = null;
+let candleStartTime = null;
+
+let candleDuration = 5000; // ডিফল্ট ৫ সেকেন্ড
+let currentPrice = 1000;
+
+const timeframeSelect = document.getElementById('timeframe');
+timeframeSelect.addEventListener('change', (e) => {
+  candleDuration = parseInt(e.target.value);
+  animCandle = null;
+  candleStartTime = null;
+});
+
+// -- জুম এবং প্যান কন্ট্রোল ভেরিয়েবল --
+let offsetX = 0; // হরাইজন্টাল অফসেট (প্যান)
+let isDragging = false;
+let dragStartX = 0;
+let dragOffsetStart = 0;
+
+let scale = 1; // জুম স্কেল, ডিফল্ট 1
+
+// মাউস ড্র্যাগ শুরু
+canvas.addEventListener('mousedown', (e) => {
+  isDragging = true;
+  dragStartX = e.clientX;
+  dragOffsetStart = offsetX;
+});
+
+// ড্র্যাগ চলাকালীন
+canvas.addEventListener('mousemove', (e) => {
+  if (isDragging) {
+    const dragDelta = e.clientX - dragStartX;
+    offsetX = dragOffsetStart + dragDelta;
+    // লিমিট সেট করুন যাতে চার্ট পুরোপুরি ডান বা বাম চলে না যায়
+    const maxOffset = 0;
+    const minOffset = -((candleWidth + candleGap) * candles.length * scale - canvas.width + 40);
+    if (offsetX > maxOffset) offsetX = maxOffset;
+    if (offsetX < minOffset) offsetX = minOffset;
+  }
+});
+
+// ড্র্যাগ শেষ
+window.addEventListener('mouseup', () => {
+  isDragging = false;
+});
+
+// মাউস হুইল দিয়ে জুম
+canvas.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  const zoomIntensity = 0.1;
+  let mouseX = e.offsetX;
+
+  let oldScale = scale;
+  if (e.deltaY < 0) {
+    scale *= (1 + zoomIntensity);
+  } else {
+    scale *= (1 - zoomIntensity);
+  }
+  scale = Math.min(Math.max(0.5, scale), 5); // জুম সীমাবদ্ধ 0.5 থেকে 5 গুণ
+
+  // মাউস পজিশন ধরে রেখে অফসেট ঠিক করা (জুম ইন/আউট সেন্টারিং)
+  offsetX -= (mouseX - offsetX) * (scale / oldScale - 1);
+
+  // অফসেটের লিমিট আবার চেক করুন
+  const maxOffset = 0;
+  const minOffset = -((candleWidth + candleGap) * candles.length * scale - canvas.width + 40);
+  if (offsetX > maxOffset) offsetX = maxOffset;
+  if (offsetX < minOffset) offsetX = minOffset;
+}, { passive: false });
+
+
+// হেল্পার ফাংশন
+function createCandle(open, close, high, low) {
+  return {open, close, high, low};
+}
+
+function animateCandleProgress(elapsed) {
+  let progress = elapsed / candleDuration;
+
+  if (!animCandle.finalData) {
+    let finalClose = animCandle.open + (Math.random() * 40 - 20);
+    let high = Math.max(animCandle.open, finalClose) + Math.random() * 10;
+    let low = Math.min(animCandle.open, finalClose) - Math.random() * 10;
+    animCandle.finalData = createCandle(animCandle.open, finalClose, high, low);
+  }
+
+  let amplitude = 5;
+  let freq = 2;
+  let wave = amplitude * Math.sin(freq * Math.PI * 2 * progress);
+  let close = animCandle.open + wave + (animCandle.finalData.close - animCandle.open) * progress;
+
+  let high = Math.max(animCandle.open, close) + (animCandle.finalData.high - Math.max(animCandle.open, animCandle.finalData.close)) * progress;
+  let low = Math.min(animCandle.open, close) - (Math.min(animCandle.open, animCandle.finalData.close) - animCandle.finalData.low) * progress;
+
+  return {open: animCandle.open, close, high, low};
+}
+
+function drawCandle(candle, x, scaleY, minLow) {
+  let color = candle.close >= candle.open ? '#4caf50' : '#f44336';
+
+  let highY = canvas.height - (candle.high - minLow) * scaleY;
+  let lowY = canvas.height - (candle.low - minLow) * scaleY;
+  let openY = canvas.height - (candle.open - minLow) * scaleY;
+  let closeY = canvas.height - (candle.close - minLow) * scaleY;
+
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2;
+
+  ctx.beginPath();
+  ctx.moveTo(x + candleWidth / 2, highY);
+  ctx.lineTo(x + candleWidth / 2, lowY);
+  ctx.stroke();
+
+  ctx.fillStyle = color;
+  ctx.fillRect(x, Math.min(openY, closeY), candleWidth, Math.max(Math.abs(closeY - openY), 1));
+}
+
+function drawMarket(animProgress) {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  let highs = candles.map(c => c.high);
+  if (animCandle) highs.push(animCandle.finalData ? animCandle.finalData.high : animCandle.open);
+  let maxHigh = Math.max(...highs);
+
+  let lows = candles.map(c => c.low);
+  if (animCandle) lows.push(animCandle.finalData ? animCandle.finalData.low : animCandle.open);
+  let minLow = Math.min(...lows);
+
+  let scaleY = (canvas.height - 40) / (maxHigh - minLow);
+
+  // ক্যান্ডেলের প্রস্থ জুম অনুযায়ী পরিবর্তন
+  candleWidth = 12 * scale;
+
+  // চার্টে প্যান ও জুম প্রয়োগ করে ড্র করতে হবে
+  // offsetX অনুযায়ী ড্র শুরু
+  ctx.save();
+  ctx.translate(offsetX + 20, 0);
+
+  candles.forEach((c, i) => {
+    let x = i * (candleWidth + candleGap);
+    drawCandle(c, x, scaleY, minLow);
+  });
+
+  if (animCandle) {
+    let candleToDraw = animateCandleProgress(animProgress);
+    let x = candles.length * (candleWidth + candleGap);
+    drawCandle(candleToDraw, x, scaleY, minLow);
+  }
+
+  ctx.restore();
+}
+
+let lastTime = null;
+
+function loop(time) {
+  if (!lastTime) lastTime = time;
+  let delta = time - lastTime;
+
+  if (!animCandle) {
+    animCandle = {open: currentPrice};
+    candleStartTime = time;
+  }
+
+  let elapsed = time - candleStartTime;
+
+  if (elapsed >= candleDuration) {
+    let finalCandle = animateCandleProgress(candleDuration);
+    candles.push(finalCandle);
+    currentPrice = finalCandle.close;
+
+    if (candles.length > maxCandles) {
+      candles.shift();
+    }
+
+    animCandle = null;
+    candleStartTime = null;
+  }
+
+  drawMarket(elapsed);
+
+  lastTime = time;
+  requestAnimationFrame(loop);
+}
+
+function initMarket() {
+  let price = currentPrice;
+  for (let i = 0; i < 20; i++) {
+    let close = price + (Math.random() * 40 - 20);
+    let high = Math.max(price, close) + Math.random() * 10;
+    let low = Math.min(price, close) - Math.random() * 10;
+    candles.push(createCandle(price, close, high, low));
+    price = close;
+  }
+  currentPrice = price;
+}
+
+initMarket();
+requestAnimationFrame(loop);
+
+</script>
+
+</body>
+</html>
