@@ -1,199 +1,590 @@
 <!DOCTYPE html>
-<html>
+<html lang="bn">
 <head>
-  <title>GHOST SIGNAL-X</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Amar Shop | Full E‑Commerce (Bangla-in-English)</title>
   <style>
-    body {
-      background-color: #000;
-      color: #0f0;
-      font-family: monospace;
-      padding: 20px;
+    :root{
+      --bg:#0b1220;--card:#121a2b;--muted:#98a3b8;--text:#e7ecf6;--brand:#4f8cff;--brand-2:#7c5cff;--accent:#22c55e;--danger:#ef4444;--shadow:0 10px 30px rgba(0,0,0,.35);--round:18px
     }
-    h1 {
-      text-align: center;
-      color: #0f0;
-      text-shadow: 0 0 5px #0f0;
-    }
-    .board {
-      border: 2px solid #0f0;
-      padding: 20px;
-      border-radius: 10px;
-      background-color: #111;
-      box-shadow: 0 0 20px #0f0;
-      max-width: 500px;
-      margin: auto;
-    }
-    label, select, input {
-      display: block;
-      margin: 10px 0;
-      background: #000;
-      color: #0f0;
-      border: 1px solid #0f0;
-      padding: 5px;
-    }
-    button {
-      background: #0f0;
-      color: #000;
-      font-weight: bold;
-      padding: 10px;
-      margin-top: 10px;
-      border: none;
-      cursor: pointer;
-      width: 100%;
-    }
-    .signalBox {
-      margin-top: 20px;
-    }
-    .signalItem {
-      background: #001100;
-      border-left: 5px solid #0f0;
-      padding: 10px;
-      margin: 5px 0;
-    }
-    .buy {
-      color: #00ff00;
-    }
-    .sell {
-      color: #ff4444;
-    }
-    .confidence {
-      color: #ffcc00;
-      font-weight: bold;
-    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:linear-gradient(120deg,#0b1220 0%,#111827 60%,#0b1220 100%);color:var(--text);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto}
+    a{color:inherit;text-decoration:none}
+    img{max-width:100%;display:block}
+    button{cursor:pointer;border:0}
+    .container{width:min(1200px,92%);margin-inline:auto}
+
+    header{position:sticky;top:0;z-index:50;backdrop-filter:saturate(180%) blur(10px);background:linear-gradient(180deg,rgba(9,14,26,.9),rgba(9,14,26,.6));border-bottom:1px solid rgba(255,255,255,.06)}
+    .nav{display:flex;align-items:center;gap:12px;justify-content:space-between;padding:12px 0}
+    .logo{display:flex;align-items:center;gap:10px;font-weight:800}
+    .logo-badge{width:34px;height:34px;border-radius:12px;background:conic-gradient(from 120deg,var(--brand),var(--brand-2),var(--brand));box-shadow:var(--shadow)}
+    .tabs{display:flex;gap:8px;flex-wrap:wrap}
+    .tab{padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.06)}
+    .tab.active{background:linear-gradient(135deg,var(--brand),var(--brand-2));box-shadow:0 8px 18px rgba(79,140,255,.35)}
+
+    .search{flex:1;max-width:520px;display:flex;align-items:center;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:10px 12px;border-radius:14px;gap:8px}
+    .search input{flex:1;background:transparent;border:0;outline:0;color:var(--text)}
+
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.08);color:var(--text);transition:transform .15s ease, box-shadow .3s ease}
+    .btn:hover{transform:translateY(-1px);box-shadow:0 10px 25px rgba(79,140,255,.18)}
+    .btn.brand{background:linear-gradient(135deg,var(--brand),var(--brand-2));box-shadow:0 10px 20px rgba(79,140,255,.35)}
+    .btn.danger{background:rgba(239,68,68,.18);border-color:rgba(239,68,68,.4)}
+
+    .section{padding:24px 0}
+    .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+    @media (max-width:1000px){.grid{grid-template-columns:repeat(3,1fr)}}
+    @media (max-width:720px){.grid{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:480px){.grid{grid-template-columns:1fr}}
+
+    .card{background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08);border-radius:var(--round);box-shadow:var(--shadow)}
+    .product{overflow:hidden;display:flex;flex-direction:column}
+    .thumb{aspect-ratio:1.2/1;background:repeating-linear-gradient(135deg,rgba(79,140,255,.15) 0 16px,rgba(124,92,255,.15) 16px 32px);display:grid;place-items:center;position:relative}
+    .thumb .badge{position:absolute;top:8px;left:8px;font-size:12px;padding:6px 10px;border-radius:999px;background:rgba(34,197,94,.18);border:1px solid rgba(34,197,94,.4)}
+    .thumb .sku{position:absolute;bottom:8px;right:8px;font-size:11px;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);color:var(--muted)}
+    .thumb > span{font-size:52px;opacity:.7}
+    .p-body{padding:12px}
+    .p-name{font-weight:700;margin:2px 0 6px}
+    .p-meta{display:flex;gap:10px;color:var(--muted);font-size:12px}
+    .p-price{display:flex;align-items:center;gap:10px;margin-top:6px}
+    .p-price b{font-size:18px}
+    .p-price s{color:var(--muted)}
+    .p-actions{display:flex;gap:8px;margin-top:10px}
+    .qty{display:grid;grid-template-columns:30px 1fr 30px;place-items:center;border:1px solid rgba(255,255,255,.1);border-radius:12px;overflow:hidden}
+    .qty button{background:transparent;color:var(--text);padding:6px 0}
+    .qty input{width:40px;text-align:center;background:transparent;border:0;color:var(--text);outline:0}
+
+    .hidden{display:none !important}
+
+    /* Drawer Cart */
+    .cart-mask{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity .25s ease}
+    .cart{position:fixed;top:0;right:0;height:100dvh;width:min(420px,96vw);background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));border-left:1px solid rgba(255,255,255,.1);box-shadow:var(--shadow);transform:translateX(100%);transition:transform .25s ease;display:flex;flex-direction:column}
+    .cart.open{transform:none}
+    .cart-mask.show{opacity:1;pointer-events:auto}
+    .cart-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.08)}
+    .cart-list{flex:1;overflow:auto;padding:10px}
+    .cart-item{display:grid;grid-template-columns:56px 1fr auto;gap:10px;align-items:center;padding:10px;border:1px solid rgba(255,255,255,.08);border-radius:12px;background:rgba(255,255,255,.03)}
+
+    /* Forms */
+    form{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    form .full{grid-column:1 / -1}
+    label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+    input,textarea,select{width:100%;padding:12px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--text);outline:0}
+    textarea{min-height:90px;resize:vertical}
+
+    .inline{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .pill{padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05)}
+
+    .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:rgba(17,24,39,.95);border:1px solid rgba(255,255,255,.08);padding:12px 16px;border-radius:12px;opacity:0;transition:all .25s ease;box-shadow:var(--shadow);z-index:60}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
   </style>
 </head>
 <body>
-  <h1>GHOST SIGNAL-X</h1>
-  <div class="board">
-    <label>Start Time:</label>
-    <input type="time" id="startTime" value="00:00">
-
-    <label>End Time:</label>
-    <input type="time" id="endTime" value="23:59">
-
-    <label>Market:</label>
-    <select id="market">
-      <option value="EUR/USD">EUR/USD</option>
-      <option value="USD/JPY">USD/JPY</option>
-      <option value="GBP/USD">GBP/USD</option>
-      <option value="AUD/USD">AUD/USD</option>
-      <option value="USD/CAD">USD/CAD</option>
-      <option value="USD/CHF">USD/CHF</option>
-      <option value="NZD/USD">NZD/USD</option>
-      <option value="EUR/GBP">EUR/GBP</option>
-      <option value="BTC/USD">BTC/USD</option>
-      <option value="ETH/USD">ETH/USD</option>
-      <option value="OTC EUR/USD">OTC EUR/USD</option>
-      <option value="OTC GBP/USD">OTC GBP/USD</option>
-      <option value="OTC USD/JPY">OTC USD/JPY</option>
-    </select>
-
-    <label>Timeframe:</label>
-    <select id="timeframe">
-      <option value="30s">30 Seconds</option>
-      <option value="1min">1 Minute</option>
-      <option value="3min">3 Minutes</option>
-      <option value="5min">5 Minutes</option>
-    </select>
-
-    <button onclick="generateSignals()">Generate Signals</button>
-
-    <div id="signalBox" class="signalBox">
-      Waiting for signals...
+  <header>
+    <div class="container nav">
+      <div class="logo">
+        <span class="logo-badge"></span>
+        <span>Amar Shop • <span style="color:var(--muted)">My Shop</span></span>
+      </div>
+      <div class="search" role="search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M10 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16z"/></svg>
+        <input id="searchInput" placeholder="Khujun / Search ponno" />
+      </div>
+      <div class="tabs">
+        <a class="tab active" data-tab="home">Hom</a>
+        <a class="tab" data-tab="checkout">Chekaout</a>
+        <a class="tab" data-tab="orders">Order</a>
+        <a class="tab" data-tab="dashboard">Dashbord</a>
+        <a class="tab" data-tab="auth">Login/Regi.</a>
+        <button class="tab" id="btnCart">Cart (<span id="cartCount">0</span>)</button>
+      </div>
     </div>
-  </div>
+  </header>
+
+  <main>
+    <!-- HOME: Products -->
+    <section class="section container" id="tab-home">
+      <h2>Popular Ponno</h2>
+      <div class="grid" id="productGrid"></div>
+    </section>
+
+    <!-- CHECKOUT -->
+    <section class="section container hidden" id="tab-checkout">
+      <h2>Chekaout Form</h2>
+      <form id="checkoutForm">
+        <div class="full"><label>Full Nam</label><input name="fullName" placeholder="Apnar nam" required></div>
+        <div><label>Mobile</label><input name="phone" type="tel" placeholder="01XXXXXXXXX" required></div>
+        <div><label>Ditiiyo Mobile</label><input name="phone2" type="tel" placeholder="Optional"></div>
+        <div class="full"><label>Email</label><input name="email" type="email" placeholder="you@example.com"></div>
+        <div class="full"><label>Full Thikana</label><textarea name="address" placeholder="Bari/Road/Area/Jela" required></textarea></div>
+
+        <div class="full">
+          <label>Delivery System</label>
+          <div class="inline">
+            <label class="pill"><input type="radio" name="deliveryType" value="home" checked> Home Delivery</label>
+            <label class="pill"><input type="radio" name="deliveryType" value="pickup"> Store Pickup</label>
+          </div>
+        </div>
+        <div>
+          <label>Zone</label>
+          <select name="deliveryZone" id="deliveryZone">
+            <option value="dhaka">Dhaka City</option>
+            <option value="outside">Dhakar Baire</option>
+          </select>
+        </div>
+        <div>
+          <label>Speed</label>
+          <select name="deliverySpeed" id="deliverySpeed">
+            <option value="standard">Standard</option>
+            <option value="express">Express</option>
+          </select>
+        </div>
+
+        <div class="full">
+          <label>Payment Method</label>
+          <div class="inline">
+            <label class="pill"><input type="radio" name="paymentMethod" value="cod" checked> COD (Cash on Delivery)</label>
+            <label class="pill"><input type="radio" name="paymentMethod" value="bkash"> bKash</label>
+            <label class="pill"><input type="radio" name="paymentMethod" value="nagad"> Nagad</label>
+          </div>
+        </div>
+        <div id="walletFields" class="full hidden">
+          <div><label>Wallet Number</label><input name="wallet" placeholder="01XXXXXXXXX"></div>
+          <div><label>Txn ID</label><input name="txn" placeholder="bKash/Nagad Txn ID"></div>
+        </div>
+
+        <div class="full card" style="padding:12px">
+          <div class="inline" style="justify-content:space-between">
+            <div>Subtotal: <b id="coSubtotal">৳0</b></div>
+            <div>Delivery Fee: <b id="coDelivery">৳0</b></div>
+            <div>Mot: <b id="coTotal">৳0</b></div>
+          </div>
+          <div style="margin-top:6px;color:var(--muted);font-size:12px">ETA: <span id="coEta">—</span></div>
+        </div>
+
+        <div class="full" style="display:flex;gap:10px">
+          <button class="btn brand" type="submit" style="flex:1">Order Confirm</button>
+          <button class="btn" id="btnClearCart" type="button" style="flex:1">Cart Clear</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ORDERS (User Order History) -->
+    <section class="section container hidden" id="tab-orders">
+      <h2>Amar Order</h2>
+      <div id="orderList" class="grid"></div>
+      <p id="orderEmpty" style="color:var(--muted)">Kono order nai. Chekaout theke order korun.</p>
+    </section>
+
+    <!-- DASHBOARD (Admin + User Profile) -->
+    <section class="section container hidden" id="tab-dashboard">
+      <div class="grid" style="grid-template-columns:2fr 1fr">
+        <div class="card" style="padding:14px">
+          <h3 style="margin-top:0">Product Management (Admin)</h3>
+          <form id="productForm">
+            <div><label>Nam</label><input name="name" required></div>
+            <div><label>Dam (৳)</label><input name="price" type="number" min="1" required></div>
+            <div><label>Purono Dam</label><input name="old" type="number" min="1" required></div>
+            <div><label>SKU</label><input name="sku" required></div>
+            <div><label>Emoji/Image Token</label><input name="emoji" placeholder="🎧"></div>
+            <div class="full" style="display:flex;gap:8px;margin-top:8px">
+              <button class="btn brand" type="submit">Add / Update</button>
+              <button class="btn" type="reset">Reset</button>
+            </div>
+            <input type="hidden" name="id">
+          </form>
+          <div style="margin-top:12px">
+            <h4>All Products</h4>
+            <div id="adminProductList" class="grid"></div>
+          </div>
+        </div>
+        <div class="card" style="padding:14px">
+          <h3 style="margin-top:0">Profile</h3>
+          <p>Login obostha: <b id="authState">Guest</b></p>
+          <div style="display:flex;gap:8px"><button class="btn" id="btnLogout">Logout</button><button class="btn" id="btnBecomeAdmin">Admin Activate</button></div>
+          <p style="color:var(--muted);margin-top:10px">Note: Admin korte <b>admin@local</b> email use korun othoba niche button diye demo admin on korun.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- AUTH -->
+    <section class="section container hidden" id="tab-auth">
+      <div class="grid" style="grid-template-columns:1fr 1fr">
+        <div class="card" style="padding:14px">
+          <h3 style="margin-top:0">Registration</h3>
+          <form id="registerForm">
+            <div class="full"><label>Nam</label><input name="name" required></div>
+            <div><label>Email</label><input name="email" type="email" required></div>
+            <div><label>Mobile</label><input name="phone" type="tel" required></div>
+            <div class="full"><label>Password</label><input name="password" type="password" required></div>
+            <div class="full"><button class="btn brand" type="submit">Account Khulun</button></div>
+          </form>
+        </div>
+        <div class="card" style="padding:14px">
+          <h3 style="margin-top:0">Login</h3>
+          <form id="loginForm">
+            <div class="full"><label>Email</label><input name="email" type="email" required></div>
+            <div class="full"><label>Password</label><input name="password" type="password" required></div>
+            <div class="full"><button class="btn brand" type="submit">Login</button></div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- CART DRAWER -->
+  <div class="cart-mask" id="cartMask"></div>
+  <aside class="cart" id="cartDrawer" aria-label="Cart drawer">
+    <div class="cart-head"><strong>Apnar Cart</strong><button class="btn" id="closeCart">Bondho</button></div>
+    <div class="cart-list" id="cartList"></div>
+    <div style="border-top:1px solid rgba(255,255,255,.08);padding:12px">
+      <div style="display:flex;justify-content:space-between"><span>Subtotal</span><b id="subtotal">৳0</b></div>
+      <div style="display:flex;justify-content:space-between"><span>Delivery</span><span id="delivery">৳0</span></div>
+      <div style="display:flex;justify-content:space-between;border-top:1px dashed rgba(255,255,255,.15);margin-top:6px;padding-top:6px"><span>Mot</span><b id="total">৳0</b></div>
+      <button class="btn brand" style="width:100%;margin-top:10px" id="goCheckout">Chekaout</button>
+    </div>
+  </aside>
+
+  <div class="toast" id="toast">✅</div>
 
   <script>
-    function pad(n) {
-      return n < 10 ? "0" + n : n;
+    // ---------- Utilities ----------
+    const $ = (q,root=document)=>root.querySelector(q);
+    const $$ = (q,root=document)=>[...root.querySelectorAll(q)];
+    const money = (n)=>`৳${Number(n).toLocaleString('en-US')}`;
+    const uid = ()=> Date.now()+''+Math.floor(Math.random()*1000);
+
+    // ---------- Storage Keys ----------
+    const SK = {
+      PRODUCTS: 'demo_products_v3',
+      CART: 'demo_cart_v3',
+      USERS: 'demo_users_v3',
+      SESSION: 'demo_session_v3',
+      ORDERS: 'demo_orders_v3'
+    };
+
+    // ---------- Seed Data ----------
+    const DEFAULT_PRODUCTS = [
+      {id:1, name:"Wireless Earbud", price:1490, old:1990, sku:"EB-1001", emoji:"🎧"},
+      {id:2, name:"Smart Watch", price:2590, old:3290, sku:"SW-2201", emoji:"⌚"},
+      {id:3, name:"Bluetooth Speaker", price:1790, old:2190, sku:"SP-1303", emoji:"🔊"},
+      {id:4, name:"Power Bank", price:1290, old:1590, sku:"PB-9902", emoji:"🔋"}
+    ];
+
+    function get(key, fallback){ try{ return JSON.parse(localStorage.getItem(key)) ?? fallback }catch{ return fallback } }
+    function set(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
+
+    // Initialize
+    if(!get(SK.PRODUCTS)) set(SK.PRODUCTS, DEFAULT_PRODUCTS);
+    if(!get(SK.CART)) set(SK.CART, []);
+    if(!get(SK.USERS)) set(SK.USERS, []);
+    if(!get(SK.ORDERS)) set(SK.ORDERS, []);
+
+    // ---------- Tab Router ----------
+    const tabs = $$('.tab[data-tab]');
+    function showTab(name){
+      tabs.forEach(t=>t.classList.toggle('active', t.dataset.tab===name));
+      ['home','checkout','orders','dashboard','auth'].forEach(id=>{
+        $('#tab-'+id).classList.toggle('hidden', id!==name);
+      });
+      if(name==='orders') renderOrders();
+      if(name==='dashboard') { renderAdminList(); updateAuthState(); }
+      if(name==='checkout') updateCheckoutSummary();
+    }
+    tabs.forEach(t=> t.addEventListener('click',()=> showTab(t.dataset.tab)) );
+
+    // ---------- Auth ----------
+    function getSession(){ return get(SK.SESSION, null); }
+    function setSession(u){ set(SK.SESSION, u); updateAuthState(); }
+    function updateAuthState(){
+      const s = getSession();
+      $('#authState').textContent = s? `${s.name} (${s.role})` : 'Guest';
+    }
+    function registerUser({name,email,phone,password}){
+      const users = get(SK.USERS, []);
+      if(users.some(u=>u.email===email)) throw new Error('Ei email-e account ache');
+      const role = (email==='admin@local')? 'admin':'user';
+      const user = {id:uid(), name,email,phone,password,role};
+      users.push(user); set(SK.USERS, users); setSession({id:user.id,name:user.name,email:user.email,role:user.role});
+    }
+    function loginUser({email,password}){
+      const users = get(SK.USERS, []);
+      const f = users.find(u=>u.email===email && u.password===password);
+      if(!f) throw new Error('Email ba password vul');
+      setSession({id:f.id,name:f.name,email:f.email,role:f.role});
     }
 
-    function calculateMovingAverage(data, period) {
-      const sum = data.slice(-period).reduce((acc, val) => acc + val, 0);
-      return sum / period;
+    $('#registerForm').addEventListener('submit',e=>{
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(e.target).entries());
+      try{ registerUser(data); toast('Registration shompurno ✅'); showTab('home'); }
+      catch(err){ toast(err.message||'Triti'); }
+      e.target.reset();
+    });
+    $('#loginForm').addEventListener('submit',e=>{
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(e.target).entries());
+      try{ loginUser(data); toast('Login shofol ✅'); showTab('home'); }
+      catch(err){ toast(err.message||'Triti'); }
+    });
+    $('#btnLogout').addEventListener('click',()=>{ setSession(null); toast('Logout kora hoyeche'); updateAuthState(); });
+    $('#btnBecomeAdmin').addEventListener('click',()=>{
+      const s=getSession(); if(!s){ toast('Age login korun'); return; }
+      s.role='admin'; setSession(s); const users=get(SK.USERS,[]); const u=users.find(x=>x.id===s.id); if(u){u.role='admin'; set(SK.USERS,users);} toast('Admin on kora holo'); updateAuthState();
+    });
+
+    // ---------- Products ----------
+    function products(){ return get(SK.PRODUCTS, []); }
+    function saveProducts(list){ set(SK.PRODUCTS, list); renderProducts(); renderAdminList(); }
+
+    const productGrid = $('#productGrid');
+    function renderProducts(list = products()){
+      productGrid.innerHTML='';
+      const q = $('#searchInput').value.toLowerCase();
+      list.filter(p=> (p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q))).forEach(p=>{
+        const el=document.createElement('article'); el.className='card product';
+        const off = 100 - Math.round(p.price*100/p.old);
+        el.innerHTML = `
+          <div class="thumb"><span>${p.emoji||'🛒'}</span><span class="badge">-${off}%</span><span class="sku">${p.sku}</span></div>
+          <div class="p-body">
+            <div class="p-name">${p.name}</div>
+            <div class="p-meta"><span class="pill">Fast Delivery</span><span class="pill">Easy Return</span></div>
+            <div class="p-price"><b>${money(p.price)}</b> <s>${money(p.old)}</s></div>
+            <div class="p-actions">
+              <div class="qty"><button data-act="minus">−</button><input value="1"><button data-act="plus">+</button></div>
+              <button class="btn brand" data-add="${p.id}">Cart-e Jog</button>
+            </div>
+          </div>`;
+        const qty = el.querySelector('.qty input');
+        el.querySelector('[data-act="minus"]').onclick=()=> qty.value = Math.max(1, (+qty.value||1)-1);
+        el.querySelector('[data-act="plus"]').onclick=()=> qty.value = (+qty.value||1)+1;
+        el.querySelector('[data-add]').onclick=()=> addToCart(p.id, +qty.value||1);
+        productGrid.appendChild(el);
+      });
     }
 
-    function calculateRSI(data, period) {
-      let gains = 0;
-      let losses = 0;
-      for (let i = 1; i < data.length; i++) {
-        const diff = data[i] - data[i - 1];
-        if (diff > 0) gains += diff;
-        else losses -= diff;
-      }
-      const avgGain = gains / period;
-      const avgLoss = losses / period;
-      const rs = avgGain / avgLoss || 1;
-      return 100 - (100 / (1 + rs));
+    // Admin list + CRUD
+    const adminList = $('#adminProductList');
+    function renderAdminList(){
+      adminList.innerHTML='';
+      products().forEach(p=>{
+        const it=document.createElement('div'); it.className='card'; it.style.padding='10px';
+        it.innerHTML = `<b>${p.name}</b><div style="color:var(--muted)">${p.sku}</div>
+          <div>${money(p.price)} <s>${money(p.old)}</s> ${p.emoji||''}</div>
+          <div style="display:flex;gap:8px;margin-top:6px">
+            <button class="btn" data-ed="${p.id}">Edit</button>
+            <button class="btn danger" data-del="${p.id}">Delete</button>
+          </div>`;
+        it.querySelector('[data-ed]').onclick=()=> fillProductForm(p.id);
+        it.querySelector('[data-del]').onclick=()=> deleteProduct(p.id);
+        adminList.appendChild(it);
+      })
     }
 
-    function getConfidenceLevel() {
-      return Math.floor(Math.random() * (99 - 80 + 1)) + 80;
+    const productForm = $('#productForm');
+    function fillProductForm(id){
+      const p = products().find(x=>x.id==id); if(!p) return;
+      ['name','price','old','sku','emoji','id'].forEach(k=> productForm.elements[k].value = p[k]);
+    }
+    productForm.addEventListener('submit', e=>{
+      e.preventDefault();
+      const s = getSession(); if(!s || s.role!=='admin'){ toast('Shudhu admin product add korte parbe'); return; }
+      const data = Object.fromEntries(new FormData(productForm).entries());
+      data.price = +data.price; data.old = +data.old; data.id = data.id? +data.id : (products().reduce((m,x)=>Math.max(m,x.id),0)+1);
+      let list = products();
+      const i = list.findIndex(x=>x.id===data.id);
+      if(i>-1) list[i]=data; else list=[...list,data];
+      saveProducts(list); productForm.reset(); toast('Save hoyeche ✅');
+    });
+    function deleteProduct(id){
+      const s = getSession(); if(!s || s.role!=='admin'){ toast('Shudhu admin delete korte parbe'); return; }
+      saveProducts(products().filter(p=>p.id!==id)); toast('Deleted');
     }
 
-    function generateSignals() {
-      const start = document.getElementById('startTime').value;
-      const end = document.getElementById('endTime').value;
-      const market = document.getElementById('market').value;
-      const timeframe = document.getElementById('timeframe').value;
-      const signalBox = document.getElementById('signalBox');
-      signalBox.innerHTML = '';
+    // ---------- Cart ----------
+    function cart(){ return get(SK.CART, []); }
+    function setCart(v){ set(SK.CART, v); updateCartUI(); updateCheckoutSummary(); }
+    function addToCart(id, qty=1){ const c=cart(); const f=c.find(i=>i.id===id); if(f) f.qty+=qty; else c.push({id,qty}); setCart(c); toast('Cart-e jog holo ✅'); }
+    function removeFromCart(id){ setCart(cart().filter(i=>i.id!==id)); }
+    function setQty(id, qty){ const c=cart(); const f=c.find(i=>i.id===id); if(!f) return; f.qty=Math.max(1,qty); setCart(c); }
+    function clearCart(){ setCart([]); }
 
-      if (!start || !end) {
-        signalBox.innerHTML = `<div class="signalItem">Please set valid start and end times.</div>`;
+    const cartDrawer = $('#cartDrawer');
+    const cartMask = $('#cartMask');
+    const cartList = $('#cartList');
+    const cartCount = $('#cartCount');
+    const subtotalEl = $('#subtotal');
+    const totalEl = $('#total');
+    const deliveryEl = $('#delivery');
+    function openCart(){ cartDrawer.classList.add('open'); cartMask.classList.add('show'); }
+    function closeCart(){ cartDrawer.classList.remove('open'); cartMask.classList.remove('show'); }
+    $('#btnCart').addEventListener('click', openCart);
+    $('#closeCart').addEventListener('click', closeCart);
+    cartMask.addEventListener('click', closeCart);
+
+    function updateCartUI(){
+      const c = cart();
+      cartCount.textContent = c.reduce((a,b)=>a+b.qty,0);
+      cartList.innerHTML='';
+      let subtotal=0;
+      c.forEach(row=>{
+        const p = products().find(x=>x.id===row.id); if(!p) return;
+        const line = p.price * row.qty; subtotal+=line;
+        const item=document.createElement('div'); item.className='cart-item';
+        item.innerHTML=`<div style="width:56px;height:56px;border-radius:10px" class="thumb"></div>
+          <div><div style="font-weight:700">${p.name}</div>
+          <div style="color:var(--muted);font-size:13px">${money(p.price)} × ${row.qty} = <b>${money(line)}</b></div>
+          <div style="display:flex;gap:8px;margin-top:6px">
+            <button class="btn" data-dec>−</button><button class="btn" data-inc>+</button><button class="btn danger" data-rm>Remove</button>
+          </div></div>
+          <div><b>${money(p.price)}</b></div>`;
+        item.querySelector('[data-dec]').onclick=()=> setQty(p.id, row.qty-1);
+        item.querySelector('[data-inc]').onclick=()=> setQty(p.id, row.qty+1);
+        item.querySelector('[data-rm]').onclick=()=> removeFromCart(p.id);
+        cartList.appendChild(item);
+      });
+      subtotalEl.textContent = money(subtotal);
+      const fee = calcDeliveryFee(); deliveryEl.textContent = money(fee);
+      totalEl.textContent = money(subtotal+fee);
+    }
+
+    // ---------- Delivery & Payment Helpers ----------
+    function calcDeliveryFee(){
+      const c = cart(); if(!c.length) return 0;
+      const zone = $('#deliveryZone')?.value || 'dhaka';
+      const speed = $('#deliverySpeed')?.value || 'standard';
+      let fee = (zone==='dhaka'? 80:120);
+      if(speed==='express' && zone==='dhaka') fee = 150;
+      return fee;
+    }
+    function etaText(){
+      const zone = $('#deliveryZone')?.value || 'dhaka';
+      const speed = $('#deliverySpeed')?.value || 'standard';
+      if(speed==='express' && zone==='dhaka') return '1–2 din (Dhaka, Express)';
+      if(zone==='dhaka') return '2–3 din (Dhaka)';
+      return '3–5 din (Baire)';
+    }
+
+    function updateCheckoutSummary(){
+      const c = cart();
+      const subtotal = c.reduce((sum,it)=>{
+        const p = products().find(x=>x.id===it.id); return sum + (p? p.price*it.qty:0);
+      },0);
+      const fee = calcDeliveryFee();
+      $('#coSubtotal') && ($('#coSubtotal').textContent = money(subtotal));
+      $('#coDelivery') && ($('#coDelivery').textContent = money(fee));
+      $('#coTotal') && ($('#coTotal').textContent = money(subtotal+fee));
+      $('#coEta') && ($('#coEta').textContent = etaText());
+    }
+
+    // Toggle wallet fields for bKash/Nagad
+    function toggleWalletFields(){
+      const m = document.querySelector('input[name="paymentMethod"]:checked')?.value;
+      const wf = $('#walletFields');
+      if(m==='bkash' || m==='nagad'){ wf.classList.remove('hidden'); }
+      else { wf.classList.add('hidden'); }
+    }
+    document.querySelectorAll('input[name="paymentMethod"]').forEach(r=> r.addEventListener('change', ()=>{ toggleWalletFields(); }));
+    $('#deliveryZone')?.addEventListener('change', updateCheckoutSummary);
+    $('#deliverySpeed')?.addEventListener('change', updateCheckoutSummary);
+
+    // ---------- Checkout + Orders ----------
+    const checkoutForm = $('#checkoutForm');
+    $('#btnClearCart').addEventListener('click', ()=>{ clearCart(); toast('Cart clear'); updateCheckoutSummary(); });
+    $('#goCheckout').addEventListener('click', ()=>{ closeCart(); showTab('checkout'); window.scrollTo({top:0,behavior:'smooth'}); });
+
+    function placeOrder(info){
+      const s = getSession();
+      const payMethod = info.paymentMethod || 'cod';
+      const paid = (payMethod==='cod') ? false : Boolean(info.txn && info.wallet);
+      const order = {
+        id:uid(),
+        items:cart(),
+        info,
+        delivery: {
+          type: info.deliveryType,
+          zone: info.deliveryZone,
+          speed: info.deliverySpeed,
+          fee: calcDeliveryFee(),
+          eta: etaText()
+        },
+        payment: {
+          method: payMethod,
+          status: paid? 'paid':'unpaid',
+          wallet: info.wallet||null,
+          txn: info.txn||null
+        },
+        userId: s? s.id:null,
+        name: s? s.name: info.fullName,
+        status:'Pending',
+        createdAt:new Date().toISOString()
+      };
+      const all = get(SK.ORDERS, []); all.unshift(order); set(SK.ORDERS, all);
+      clearCart(); renderOrders(); updateCheckoutSummary(); toast('Order confirm ✅');
+    }
+
+    checkoutForm.addEventListener('submit', e=>{
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(checkoutForm).entries());
+      if(cart().length===0){ toast('Cart khali'); return; }
+      // Payment validation
+      const m = data.paymentMethod;
+      if((m==='bkash' || m==='nagad') && (!data.wallet || !data.txn)){
+        toast('bKash/Nagad use korle Wallet & Txn dite hobe');
         return;
       }
+      placeOrder(data); checkoutForm.reset(); toggleWalletFields(); showTab('orders');
+    });
 
-      let [sh, sm] = start.split(':').map(Number);
-      let [eh, em] = end.split(':').map(Number);
+    function renderOrders(){
+      const list = get(SK.ORDERS, []);
+      const s = getSession();
+      const mine = s? list.filter(o=>o.userId===s.id) : list; // guest hole sob dekhabe (demo)
+      const wrap = $('#orderList'); const empty = $('#orderEmpty');
+      wrap.innerHTML=''; empty.style.display = mine.length? 'none':'block';
+      mine.forEach(o=>{
+        const subtotal = o.items.reduce((sum, it)=>{
+          const p = products().find(x=>x.id===it.id); return sum + (p? p.price*it.qty:0);
+        },0);
+        const total = subtotal + (o.delivery?.fee||0);
+        const card=document.createElement('div'); card.className='card'; card.style.padding='12px';
+        card.innerHTML = `<div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap">
+          <div><b>Order #${o.id}</b><div style="color:var(--muted);font-size:12px">${new Date(o.createdAt).toLocaleString()}</div></div>
+          <div><b>${money(total)}</b><div style="color:var(--muted);font-size:12px">${o.status}</div></div>
+        </div>
+        <div class="inline" style="margin-top:8px;color:var(--muted);font-size:13px">
+          <span class="pill">Delivery: ${o.delivery?.type==='home'?'Home':'Pickup'}</span>
+          <span class="pill">Zone: ${o.delivery?.zone}</span>
+          <span class="pill">Speed: ${o.delivery?.speed}</span>
+          <span class="pill">ETA: ${o.delivery?.eta}</span>
+          <span class="pill">Payment: ${o.payment?.method} (${o.payment?.status})</span>
+        </div>
+        <div style="margin-top:8px;color:var(--muted)">${o.info.fullName||o.name} • ${o.info.phone||''} • ${o.info.address||''}</div>
+        <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">${o.items.map(it=>{
+          const p = products().find(x=>x.id===it.id); if(!p) return '';
+          return `<span class="card" style="padding:6px 10px;border-radius:10px">${p.name} × ${it.qty}</span>`;
+        }).join('')}</div>`;
+        wrap.appendChild(card);
+      })
+    }
 
-      const prices = [1.1234, 1.1240, 1.1250, 1.1260, 1.1275, 1.1290, 1.1285, 1.1300, 1.1320];
-      let signals = [];
-      let sn = 1;
+    // ---------- Search ----------
+    $('#searchInput').addEventListener('input',()=> renderProducts());
 
-      while (sh < eh || (sh === eh && sm <= em)) {
-        const timeStr = `${pad(sh)}:${pad(sm)}`;
-        const ma = calculateMovingAverage(prices, 3);
-        const rsi = calculateRSI(prices, 14);
+    // ---------- Toast ----------
+    const toastEl = $('#toast'); let tmr;
+    function toast(text){ toastEl.textContent=text; toastEl.classList.add('show'); clearTimeout(tmr); tmr=setTimeout(()=>toastEl.classList.remove('show'),1800); }
 
-        let signal = "";
-        let isBuy = false;
-
-        if (rsi < 30) {
-          signal = "BUY ↑";
-          isBuy = true;
-        } else if (rsi > 70) {
-          signal = "SELL ↓";
-          isBuy = false;
-        } else if (prices[prices.length - 1] > ma) {
-          signal = "BUY ↑";
-          isBuy = true;
-        } else {
-          signal = "SELL ↓";
-          isBuy = false;
-        }
-
-        const confidence = getConfidenceLevel();
-        const signalHTML = `
-          <div class="signalItem">
-            <b>#${sn++}</b> — <span>${timeStr}</span> — 
-            <span class="${isBuy ? 'buy' : 'sell'}"><b>${signal}</b></span> 
-            (${market} / ${timeframe}) — 
-            <span class="confidence">${confidence}%</span>
-          </div>
-        `;
-        signals.push(signalHTML);
-
-        sm++;
-        if (sm >= 60) {
-          sm = 0;
-          sh++;
-        }
-
-        prices.push(prices[prices.length - 1] + (Math.random() * 0.001 - 0.0005));
-      }
-
-      signalBox.innerHTML = signals.join('');
+    // ---------- Start ----------
+    renderProducts(); updateCartUI(); updateAuthState(); toggleWalletFields();
+    function showTab(name){
+      tabs.forEach(t=>t.classList.toggle('active', t.dataset.tab===name));
+      ['home','checkout','orders','dashboard','auth'].forEach(id=>{
+        const el = document.getElementById('tab-'+id); if(el) el.classList.toggle('hidden', id!==name);
+      });
+      if(name==='orders') renderOrders();
+      if(name==='dashboard') { renderAdminList(); updateAuthState(); }
+      if(name==='checkout') updateCheckoutSummary();
     }
   </script>
 </body>
